@@ -1,3 +1,4 @@
+// Package util provides utility functions and configuration loading for the application.
 package util
 
 import (
