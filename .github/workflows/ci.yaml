@@ -46,7 +46,7 @@ jobs:
           sudo mv migrate /usr/local/bin/
 
       - name: Run Migrations
-        run: make migrateup
+        run: make migrate-up
 
       - name: Run Tests
         run: make test
