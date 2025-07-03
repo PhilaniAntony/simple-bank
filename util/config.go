@@ -18,18 +18,17 @@ type Config struct {
 	DBPassword          string        `mapstructure:"DB_PASSWORD"`
 }
 
-func LoadConfig(path string) (Config, error) {
-	viper.AddConfigPath(path)
+func LoadConfig(path string) (config Config, err error) {
 	viper.SetConfigName("app")
 	viper.SetConfigType("env")
-
+	viper.AddConfigPath(path)
+	viper.AddConfigPath(".")
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err != nil {
-		return Config{}, fmt.Errorf("cannot read config file: %w", err)
+		return config, fmt.Errorf("cannot read config file: %w", err)
 	}
 
-	var config Config
-	err := viper.Unmarshal(&config)
-	return config, err
+	err = viper.Unmarshal(&config)
+	return
 }
