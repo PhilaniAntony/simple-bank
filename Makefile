@@ -1,6 +1,19 @@
-# Load variables from app.env
-include .env
-export $(shell sed 's/=.*//' .env)
+# Optional: load variables from .env only if it exists
+ifneq ("$(wildcard .env)","")
+  include .env
+  export $(shell sed 's/=.*//' .env)
+endif
+
+# Required environment variables
+REQUIRED_VARS := DB_SOURCE DB_USER DB_PASSWORD
+
+check-env:
+	@$(foreach var,$(REQUIRED_VARS), \
+		if [ -z "$(${var})" ]; then \
+			echo "Error: Environment variable ${var} is not set."; \
+			exit 1; \
+		fi; \
+	)
 
 create-migrations:
 	migrate create -ext sql -dir db/migration seq init_schema
@@ -11,22 +24,22 @@ postgres:
 		-e POSTGRES_PASSWORD=$(DB_PASSWORD) \
 		-d postgres:17.5-alpine
 
-createdb:
+createdb: check-env
 	docker exec -it postgres17 createdb --username=$(DB_USER) --owner=$(DB_USER) $(shell echo $(DB_SOURCE) | sed -E 's/.*\/([^?]+).*/\1/')
 
-dropdb:
+dropdb: check-env
 	docker exec -it postgres17 dropdb $(shell echo $(DB_SOURCE) | sed -E 's/.*\/([^?]+).*/\1/')
 
-migrate-up:
+migrate-up: check-env
 	migrate -path db/migration -database "$(DB_SOURCE)" -verbose up
 
-migrate-up1:
+migrate-up1: check-env
 	migrate -path db/migration -database "$(DB_SOURCE)" -verbose up 1
 
-migrate-down:
+migrate-down: check-env
 	migrate -path db/migration -database "$(DB_SOURCE)" -verbose down
 
-migrate-down1:
+migrate-down1: check-env
 	migrate -path db/migration -database "$(DB_SOURCE)" -verbose down 1
 
 sqlc:
@@ -38,4 +51,4 @@ test:
 server:
 	go run main.go
 
-.PHONY: create-migrations postgres createdb dropdb migrate-up migrate-up1 migrate-down migrate-down1 sqlc test server
+.PHONY: check-env create-migrations postgres createdb dropdb migrate-up migrate-up1 migrate-down migrate-down1 sqlc test server

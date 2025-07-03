@@ -2,6 +2,7 @@
 package util
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/spf13/viper"
@@ -18,14 +19,14 @@ type Config struct {
 }
 
 func LoadConfig(path string) (config Config, err error) {
-	viper.AddConfigPath(path)
 	viper.SetConfigName("app")
 	viper.SetConfigType("env")
-
+	viper.AddConfigPath(path)
+	viper.AddConfigPath(".")
 	viper.AutomaticEnv()
 
-	if err = viper.ReadInConfig(); err != nil {
-		return
+	if err := viper.ReadInConfig(); err != nil {
+		return config, fmt.Errorf("cannot read config file: %w", err)
 	}
 
 	err = viper.Unmarshal(&config)
