@@ -2,22 +2,18 @@ package api
 
 import (
 	"testing"
-	"time"
 
 	db "github.com/PhilaniAntony/simplebank/db/sqlc"
 	"github.com/PhilaniAntony/simplebank/util"
+	"github.com/stretchr/testify/require"
 )
 
 func newTestServer(t *testing.T, store *db.Store) *Server {
-	config := util.Config{
-		TokenSymmetricKey:   util.RandomString(32),
-		AccessTokenDuration: time.Minute,
-	}
+	config, err := util.LoadConfig(".")
+	require.NoError(t, err)
 
 	server, err := NewServer(config, store)
-	if err != nil {
-		return nil
-	}
+	require.NoError(t, err)
 
 	return server
 }

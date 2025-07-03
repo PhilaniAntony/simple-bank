@@ -2,6 +2,7 @@
 package util
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/spf13/viper"
@@ -17,17 +18,18 @@ type Config struct {
 	DBPassword          string        `mapstructure:"DB_PASSWORD"`
 }
 
-func LoadConfig(path string) (config Config, err error) {
+func LoadConfig(path string) (Config, error) {
 	viper.AddConfigPath(path)
 	viper.SetConfigName("app")
 	viper.SetConfigType("env")
 
 	viper.AutomaticEnv()
 
-	if err = viper.ReadInConfig(); err != nil {
-		return
+	if err := viper.ReadInConfig(); err != nil {
+		return Config{}, fmt.Errorf("cannot read config file: %w", err)
 	}
 
-	err = viper.Unmarshal(&config)
-	return
+	var config Config
+	err := viper.Unmarshal(&config)
+	return config, err
 }
