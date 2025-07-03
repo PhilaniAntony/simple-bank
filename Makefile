@@ -6,7 +6,7 @@ create-migrations:
 	migrate create -ext sql -dir db/migration seq init_schema
 
 postgres:
-	docker run --name postgres17 -p 5432:5432 \
+	docker run --name postgres17 --network bank-network -p 5432:5432 \
 		-e POSTGRES_USER=$(DB_USER) \
 		-e POSTGRES_PASSWORD=$(DB_PASSWORD) \
 		-d postgres:17.5-alpine
