@@ -5,6 +5,10 @@ WORKDIR /app
 
 # Install build tools and copy source code
 RUN apk add --no-cache wget tar
+
+COPY go.mod go.sum ./
+RUN go mod download
+
 COPY . .
 
 # Build the Go binary
@@ -33,4 +37,5 @@ RUN chmod +x /app/start.sh /app/wait-for.sh
 
 EXPOSE 8080
 
+# Default entrypoint for api service
 ENTRYPOINT ["/app/start.sh"]

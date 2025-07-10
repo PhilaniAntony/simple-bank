@@ -3,7 +3,7 @@
 set -e
 
 echo "Waiting for Postgres..."
-/app/wait-for.sh postgres:5432
+/app/wait-for.sh postgres:5432 -- echo "Postgres is up"
 
 echo "Running DB migrations..."
 /app/migrate -path /app/db/migration -database "$DB_SOURCE" -verbose up
