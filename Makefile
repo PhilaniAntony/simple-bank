@@ -1,4 +1,4 @@
-# Optional: load variables from .env only if it exists
+# Load variables from .env if it exists
 ifneq ("$(wildcard .env)","")
   include .env
   export $(shell sed 's/=.*//' .env)
@@ -51,4 +51,10 @@ test:
 server:
 	go run main.go
 
-.PHONY: check-env create-migrations postgres createdb dropdb migrate-up migrate-up1 migrate-down migrate-down1 sqlc test server
+compose-up:
+	docker-compose --env-file app.env up --build
+
+compose-down:
+	docker-compose --env-file app.env down
+
+.PHONY: check-env create-migrations postgres createdb dropdb migrate-up migrate-up1 migrate-down migrate-down1 sqlc test server compose-up compose-down

@@ -1,7 +1,8 @@
-version: '3.9'
 services:
   postgres:
     image: postgres:17.5-alpine
+    ports:
+      - '5432:5432'
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -20,3 +21,18 @@ services:
       - postgres
     entrypoint: ['/app/wait-for.sh', 'postgres:5432', '--', '/app/start.sh']
     command: ['app/main']
+
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    environment:
+      - DB_SOURCE=${DB_SOURCE}
+    depends_on:
+      - postgres
+    entrypoint: ['/app/wait-for.sh', 'postgres:5432', '--']
+    command: ['go', 'test', './...']
+
+volumes:
+  pgdata:
