@@ -8,6 +8,8 @@ import (
 	db "github.com/PhilaniAntony/simplebank/db/sqlc"
 	"github.com/PhilaniAntony/simplebank/util"
 	"github.com/stretchr/testify/require"
+
+	_ "github.com/lib/pq"
 )
 
 func newTestServer(t *testing.T, store *db.Store) *Server {

@@ -45,7 +45,7 @@ jobs:
       - name: Create fallback config file
         run: |
           echo "DB_SOURCE=${{ secrets.DB_SOURCE }}" > app.env
-          echo "GIN_MODE=debug" >> app.env
+          echo "GIN_MODE=${{ secrets.GIN_MODE }}" >> app.env
           echo "TOKEN_SYMMETRIC_KEY=${{ secrets.TOKEN_SYMMETRIC_KEY }}" >> app.env
           echo "ACCESS_TOKEN_DURATION=30m" >> app.env
 
