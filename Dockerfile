@@ -10,6 +10,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
+COPY app.env .
 
 # Build the Go binary
 RUN go build -o main main.go
